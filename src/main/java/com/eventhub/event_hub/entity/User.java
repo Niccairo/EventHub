@@ -18,6 +18,9 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private List<Event> events;
 
+    public User(){
+    }
+
     public User(long id, String name, String surname) {
         this.id = id;
         this.name = name;
@@ -37,6 +40,10 @@ public class User {
     }
 
     public void setName(String name) {
+        // Verifica se il nome è nullo o contiene solo spazi vuoti
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il nome della categoria non può essere vuoto");
+        }
         this.name = name;
     }
 
@@ -45,6 +52,10 @@ public class User {
     }
 
     public void setSurname(String surname) {
+        // Verifica se il nome è nullo o contiene solo spazi vuoti
+        if (surname == null || surname.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il nome della categoria non può essere vuoto");
+        }
         this.surname = surname;
     }
 }

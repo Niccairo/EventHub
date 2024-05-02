@@ -28,8 +28,13 @@ public class Event {
     private LocalTime startingTime;
     @Column(name = "end_time")
     private LocalTime endTime;
-    //    private Location location;
-    //    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @ManyToMany
     @JoinTable(
             name = "participants",
@@ -37,13 +42,18 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users ;
 
-    public Event(long id, String name, String description, double priceTicket, String email, int maxNumberOfPartecipants) {
-        this.id = id;
+    public Event(){
+    }
+
+    public Event(String name, String description, double priceTicket, String email, int maxNumberOfPartecipants, LocalDate date, LocalTime startingTime, LocalTime endTime) {
         this.name = name;
         this.description = description;
         this.priceTicket = priceTicket;
         this.email = email;
         this.maxNumberOfPartecipants = maxNumberOfPartecipants;
+        this.date = date;
+        this.startingTime = startingTime;
+        this.endTime = endTime;
     }
 
     public String getName() {
@@ -51,6 +61,10 @@ public class Event {
     }
 
     public void setName(String name) {
+        // Verifica se il nome è nullo o contiene solo spazi vuoti
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Il nome della categoria non può essere vuoto");
+        }
         this.name = name;
     }
 
@@ -62,21 +76,21 @@ public class Event {
         this.description = description;
     }
 
-//    public Location getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(Location location) {
-//        this.location = location;
-//    }
-//
-//    public Category getCategory() {
-//        return category;
-//    }
-//
-//    public void setCategory(Category category) {
-//        this.category = category;
-//    }
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public long getId() {
         return id;
@@ -91,6 +105,9 @@ public class Event {
     }
 
     public void setPriceTicket(double priceTicket) {
+        if (priceTicket < 0) {
+            throw new IllegalArgumentException("Il prezzo del biglietto non può essere negativo");
+        }
         this.priceTicket = priceTicket;
     }
 
@@ -107,6 +124,9 @@ public class Event {
     }
 
     public void setMaxNumberOfPartecipants(int maxNumberOfPartecipants) {
+        if (maxNumberOfPartecipants <= 0) {
+            throw new IllegalArgumentException("Il numero massimo di partecipanti deve essere maggiore di zero");
+        }
         this.maxNumberOfPartecipants = maxNumberOfPartecipants;
     }
 
@@ -140,5 +160,22 @@ public class Event {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", priceTicket=" + priceTicket +
+                ", email='" + email + '\'' +
+                ", maxNumberOfPartecipants=" + maxNumberOfPartecipants +
+                ", date=" + date +
+                ", startingTime=" + startingTime +
+                ", endTime=" + endTime +
+                ", location=" + location +
+                ", category=" + category +
+                ", users=" + users +
+                '}';
     }
 }
